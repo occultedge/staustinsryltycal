@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Occultedge Royalty Payment Calculator</title>
+    <title>Occultedge Payment Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,13 +68,27 @@
             padding: 20px;
             border-radius: 10px;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <h1>St. Austin's Occultedge Payment Calculator</h1>
+    <h1>Login to Access Payment Calculator</h1>
 
-    <div class="container">
+    <div class="container" id="login-container">
+        <label for="loginId">Login ID:</label>
+        <input type="text" id="loginId" placeholder="Enter Login ID">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter Password">
+
+        <button onclick="checkLogin()">Login</button>
+        <p id="loginError" style="color: red; display: none;">Incorrect login ID or password. Please try again.</p>
+    </div>
+
+    <div class="container hidden" id="calculator-container">
         <label for="students">Number of Students:</label>
         <input type="number" id="students" placeholder="Enter number of students">
 
@@ -90,12 +104,12 @@
         <label for="paymentType">Select Payment Type:</label>
         <select id="paymentType">
             <option value="40">Registration (40 USD)</option>
-            <option value="260">1st Installment (260 USD)</option>
+            <option value="300">1st Installment (300 USD)</option>
             <option value="180">2nd Installment (180 USD)</option>
             <option value="120">3rd Installment (120 USD)</option>
         </select>
 
-        <label for="hours">Number of Hours of Live online teaching Per Month (Min 12 hours):</label>
+        <label for="hours">Number of Hours Per Month (Min 12 hours):</label>
         <input type="number" id="hours" value="12" min="12" placeholder="Enter number of hours per month">
 
         <button onclick="calculatePayment()">Calculate Payable Amount</button>
@@ -114,8 +128,8 @@
         </form>
     </div>
 
-    <div class="rules">
-        <h3>Important Rules Of Calculations :</h3>
+    <div class="rules hidden" id="rules-container">
+        <h3>Important Rules and Information:</h3>
         <ul>
             <li>The minimum batch payment is calculated based on 12 hours per month at $13 per hour.</li>
             <li>If the Occultedge share (20% of the total student fees) plus the 5% transfer charge is greater than the minimum batch payment, you will pay that higher amount.</li>
@@ -126,6 +140,19 @@
     </div>
 
     <script>
+        function checkLogin() {
+            const loginId = document.getElementById('loginId').value;
+            const password = document.getElementById('password').value;
+
+            if (loginId === 'Bisheline' && password === 'Bisheline') {
+                document.getElementById('login-container').classList.add('hidden');
+                document.getElementById('calculator-container').classList.remove('hidden');
+                document.getElementById('rules-container').classList.remove('hidden');
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
         function calculatePayment() {
             const students = document.getElementById('students').value;
             const courseType = document.getElementById('courseType').value;
@@ -139,7 +166,7 @@
             const minimumPayment = hours * hourlyRate;
             const totalPayable = Math.max(occutedgeAmount + transferCharge, minimumPayment);
 
-            document.getElementById('result').innerHTML = `Total Royalty payable to Occultedge: $${totalPayable.toFixed(2)}`;
+            document.getElementById('result').innerHTML = `Total payable to Occultedge: $${totalPayable.toFixed(2)}`;
 
             document.getElementById('breakdown').innerHTML = `
                 <strong>Payment Breakdown:</strong><br>
