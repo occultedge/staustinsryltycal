@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Occultedge Payment Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #004085;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            margin: 20px auto;
+            border-radius: 10px;
+            max-width: 500px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            color: #495057;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #155724;
+        }
+        .breakdown {
+            font-size: 16px;
+            color: #495057;
+            text-align: left;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>St. Austin's Occultedge Payment Calculator</h1>
+
+    <div class="container">
+        <label for="students">Number of Students:</label>
+        <input type="number" id="students" placeholder="Enter number of students">
+
+        <label for="courseType">Select Course:</label>
+        <select id="courseType">
+            <option value="Nursing Degree">Nursing Degree</option>
+            <option value="Midwifery Degree">Midwifery Degree</option>
+            <option value="Pharmacy Technology Degree">Pharmacy Technology Degree</option>
+            <option value="Dental Therapy">Dental Therapy</option>
+            <option value="Medical Imaging">Medical Imaging</option>
+        </select>
+
+        <label for="paymentType">Select Payment Type:</label>
+        <select id="paymentType">
+            <option value="40">Registration (40 USD)</option>
+            <option value="300">1st Installment (300 USD)</option>
+            <option value="180">2nd Installment (180 USD)</option>
+            <option value="120">3rd Installment (120 USD)</option>
+        </select>
+
+        <button onclick="calculatePayment()">Calculate Payable Amount</button>
+
+        <div class="result" id="result"></div>
+
+        <div class="breakdown" id="breakdown"></div>
+
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+            <input type="hidden" name="cmd" value="_xclick">
+            <input type="hidden" name="business" value="rohitvenaik@gmail.com">
+            <input type="hidden" name="item_name" value="Occultedge Payment">
+            <input type="hidden" name="currency_code" value="USD">
+            <input type="hidden" id="paypalAmount" name="amount" value="">
+            <button type="submit" id="paypalButton" disabled>Pay with PayPal</button>
+        </form>
+    </div>
+
+    <script>
+        function calculatePayment() {
+            const students = document.getElementById('students').value;
+            const courseType = document.getElementById('courseType').value;
+            const paymentType = document.getElementById('paymentType').value;
+            const totalAmount = students * paymentType;
+            const occutedgeAmount = totalAmount * 0.2;
+            const transferCharge = occutedgeAmount * 0.05;
+            const totalPayable = occutedgeAmount + transferCharge;
+
+            document.getElementById('result').innerHTML = `Total payable to Occultedge: $${totalPayable.toFixed(2)}`;
+
+            document.getElementById('breakdown').innerHTML = `
+                <strong>Payment Breakdown:</strong><br>
+                - Course Selected: ${courseType}<br>
+                - Number of Students: ${students}<br>
+                - Payment Type Selected: $${paymentType} per student<br>
+                - Total from all students: $${totalAmount.toFixed(2)}<br>
+                - 20% Occultedge Share: $${occutedgeAmount.toFixed(2)}<br>
+                - 5% Transfer Charge: $${transferCharge.toFixed(2)}<br>
+                <strong>Total Amount Payable to Occultedge: $${totalPayable.toFixed(2)}</strong>
+            `;
+
+            document.getElementById('paypalAmount').value = totalPayable.toFixed(2);
+
+            if (totalPayable > 0) {
+                document.getElementById('paypalButton').disabled = false;
+            } else {
+                document.getElementById('paypalButton').disabled = true;
+            }
+        }
+    </script>
+
+</body>
+</html>
+
